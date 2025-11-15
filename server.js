@@ -39,6 +39,11 @@ app.use(express.json());
 // Basic health check
 app.get("/", (req, res) => res.send("OK"));
 
+app.get("/test", (req, res) => {
+    res.json({ status: "Server is running", time: new Date().toISOString() });
+});
+
+
 // Endpoint: check code in Firestore collection "codes" and create custom token
 app.post("/getCustomToken", async (req, res) => {
     try {
