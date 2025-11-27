@@ -60,20 +60,24 @@ app.post("/getCustomToken", async (req, res) => {
         const data = docSnap.data();
         const uid = data.uid || `user_${code.trim()}`;
 
-        // Optional custom claims
-        const customClaims = {
+        // SET CUSTOM CLAIMS FIRST
+        await admin.auth().setCustomUserClaims(uid, {
             code: code.trim(),
             bootnaam: data.bootnaam || null,
             wedstrijdnummer: data.wedstrijdnummer || null,
-        };
+        });
 
-        const customToken = await admin.auth().createCustomToken(uid, customClaims);
+        // THEN create the custom token
+        const customToken = await admin.auth().createCustomToken(uid);
+
         return res.json({ token: customToken });
+
     } catch (err) {
         console.error("Error /getCustomToken:", err);
         return res.status(500).json({ error: "Interne serverfout" });
     }
 });
+
 
 // luister op Render's PORT of fallback 3000
 const PORT = process.env.PORT || 3000;
